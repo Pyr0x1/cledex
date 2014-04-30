@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
 	sqlite3 *db; 			// SQLite database
 	char *zErrMsg = NULL;	// string to hold errors
 	int retCode;			// return code used for various functions
-	char *query = NULL;
+	char *query = NULL;     // string to hold various queries (freed and reallocated every time to avoid memory leaks)
 	POKEMON *pokemon = NULL;
 
     if(argc != 2){

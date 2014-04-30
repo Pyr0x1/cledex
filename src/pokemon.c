@@ -68,6 +68,9 @@ void convertLineToSpace(char* str){
         }
     }
 
+    if(strcmp(str, "Ho Oh") == 0) // handle Ho-Oh case that needs line instead of space
+        sprintf(str, "%s", "Ho-Oh");
+
     return ;
 }
 
@@ -78,11 +81,10 @@ void convertSpaceToLine(char* str){
     str[0] = tolower(str[0]);
 
     for(i = 0; i < strlen(str); i++){
-        if(str[i] == ' '){
+        if(str[i] == ' ')
             str[i] = '-';
-            if(str[i + 1] != '\0')
-                str[i + 1] = tolower(str[i + 1]);
-        }
+        else
+            str[i] = tolower(str[i]);
     }
 
     return ;
