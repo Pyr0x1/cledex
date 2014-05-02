@@ -1,23 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib.h>
 #include "callbacks.h"
 #include "pokemon.h"
 
-int callbackIdFromName(void *pokemon, int argc, char **argv, char **azColName){
+// plist is actually a GSList** to save the new pointer to the list
+int callbackIdFromName(void *plist, int argc, char **argv, char **azColName){
 
-	POKEMON* poke = (POKEMON *) pokemon;
+    GSList** pokeList = (GSList**) plist;
+	POKEMON* pokemon = NULL;
 
-	/*int i;
+	pokemon = pokeCreate();
 
-	for(i = 0; i < argc; i++)
-		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+    pokemon->id = atoi(argv[0]);
+    pokemon->realId = atoi(argv[1]);
+	pokemon->name = strdup(argv[2]);
 
-	printf("\n");*/
-
-    poke->id = atoi(argv[0]);
-    poke->realId = atoi(argv[1]);
-	poke->name = strdup(argv[2]);
+	*pokeList = g_slist_prepend(*pokeList, pokemon);
 
 	return 0;
 
@@ -33,6 +33,21 @@ int callbackTypesFromId(void *pokemon, int argc, char **argv, char **azColName){
 
 }
 
+int callbackTypesFromName(void *param, int argc, char **argv, char **azColName){
+
+    PARAM* parameters = (PARAM *) param;
+    POKEMON* pokemon = NULL;
+
+    pokemon = (POKEMON *) g_slist_nth_data(parameters->pokeList, parameters->current);
+
+    if(pokemon->id != atoi(argv[2]))
+        pokemon = (POKEMON *) g_slist_nth_data(parameters->pokeList, ++(parameters->current));
+
+    pokemon->types[atoi(argv[1]) - 1] = strdup(argv[0]);
+
+    return 0;
+}
+
 int callbackAbilitiesFromId(void *pokemon, int argc, char **argv, char **azColName){
 
 	POKEMON* poke = (POKEMON*) pokemon;
@@ -42,6 +57,21 @@ int callbackAbilitiesFromId(void *pokemon, int argc, char **argv, char **azColNa
 	return 0;
 }
 
+int callbackAbilitiesFromName(void *param, int argc, char **argv, char **azColName){
+
+    PARAM* parameters = (PARAM *) param;
+    POKEMON* pokemon = NULL;
+
+    pokemon = (POKEMON *) g_slist_nth_data(parameters->pokeList, parameters->current);
+
+    if(pokemon->id != atoi(argv[2]))
+        pokemon = (POKEMON *) g_slist_nth_data(parameters->pokeList, ++(parameters->current));
+
+    pokemon->abilities[atoi(argv[1]) - 1] = strdup(argv[0]);
+
+    return 0;
+}
+
 int callbackStatsFromId(void *pokemon, int argc, char **argv, char **azColName){
 
     POKEMON* poke = (POKEMON*) pokemon;
@@ -49,4 +79,19 @@ int callbackStatsFromId(void *pokemon, int argc, char **argv, char **azColName){
     poke->stats[atoi(argv[1]) - 1] = atoi(argv[0]);
 
 	return 0;
+}
+
+int callbackStatsFromName(void *param, int argc, char **argv, char **azColName){
+
+    PARAM* parameters = (PARAM *) param;
+    POKEMON* pokemon = NULL;
+
+    pokemon = (POKEMON *) g_slist_nth_data(parameters->pokeList, parameters->current);
+
+    if(pokemon->id != atoi(argv[2]))
+        pokemon = (POKEMON *) g_slist_nth_data(parameters->pokeList, ++(parameters->current));
+
+    pokemon->stats[atoi(argv[1]) - 1] = atoi(argv[0]);
+
+    return 0;
 }

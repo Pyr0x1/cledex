@@ -1,5 +1,5 @@
 all: *.c *.h
-	gcc *.c -l sqlite3 -o cledex
+	gcc *.c `pkg-config --cflags --libs glib-2.0` -l sqlite3 -o cledex
 
 install: 
 	cp cledex /usr/local/bin

@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <sqlite3.h>
 #include "pokemon.h"
 #include "colors.h"
+#include "queries.h"
+#include "callbacks.h"
 
 POKEMON* pokeCreate(){
 
@@ -21,10 +24,40 @@ POKEMON* pokeCreate(){
 	return pokemon;
 }
 
+GSList* pokeListInit(sqlite3* db, char name[]){
+
+    char* zErrMsg = NULL;
+    int retCode;
+    char* query = NULL;
+    GSList* pokeList = NULL;
+
+    query = QPokeIdFromName(name);
+
+    retCode = sqlite3_exec(db, query, callbackIdFromName, &pokeList, &zErrMsg);
+    free(query);
+	if(retCode != SQLITE_OK){
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+		g_slist_free_full(pokeList, (GDestroyNotify) freePoke);
+		sqlite3_close(db);
+		return NULL;
+	}
+	if(g_slist_length(pokeList) == 0){
+        fprintf(stderr, "Entry not found, make sure the name is correct.\n");
+
+		return NULL;
+	}
+
+	pokeList = g_slist_reverse(pokeList);
+
+    return pokeList;
+}
+
 void pokePrint(POKEMON* pokemon){
 
     printf("\n");
-	printf("[%d]\t%s\t\t", pokemon->realId, pokemon->name);
+    printf("--------------------\n\n");
+	printf("\t[%d]\t%s\t\t", pokemon->realId, pokemon->name);
 	printf("%s", pokemon->types[0]);
 
 	if(pokemon->types[1] != NULL)
@@ -32,24 +65,22 @@ void pokePrint(POKEMON* pokemon){
     printf("\n\n");
 
     if(pokemon->abilities[0] != NULL)
-        printf("\t%s\n", pokemon->abilities[0]);
+        printf("\t\t%s\n", pokemon->abilities[0]);
 
     if(pokemon->abilities[1] != NULL)
-        printf("\t%s\n", pokemon->abilities[1]);
+        printf("\t\t%s\n", pokemon->abilities[1]);
 
     if(pokemon->abilities[2] != NULL)
-        printf("\t%s (HA)\n", pokemon->abilities[2]);
+        printf("\t\t%s (HA)\n", pokemon->abilities[2]);
 
     printf("\n");
 
-    printf(KRED "\tPS: %d\n" KNRM, pokemon->stats[0]);
-    printf(KBLU "\tAtk: %d\n" KNRM, pokemon->stats[1]);
-    printf(KYEL "\tDef: %d\n" KNRM, pokemon->stats[2]);
-	printf(KCYN "\tSpAtk: %d\n" KNRM, pokemon->stats[3]);
-	printf(KGRN "\tSpDef: %d\n" KNRM, pokemon->stats[4]);
-	printf(KMAG "\tSpeed: %d\n" KNRM, pokemon->stats[5]);
-
-	printf("\n");
+    printf(KRED "\t\tPS: %d\n" KNRM, pokemon->stats[0]);
+    printf(KBLU "\t\tAtk: %d\n" KNRM, pokemon->stats[1]);
+    printf(KYEL "\t\tDef: %d\n" KNRM, pokemon->stats[2]);
+	printf(KCYN "\t\tSpAtk: %d\n" KNRM, pokemon->stats[3]);
+	printf(KGRN "\t\tSpDef: %d\n" KNRM, pokemon->stats[4]);
+	printf(KMAG "\t\tSpeed: %d\n" KNRM, pokemon->stats[5]);
 
 	return ;
 }
@@ -104,6 +135,66 @@ void convertAllStrings(POKEMON* pokemon){
         convertLineToSpace(pokemon->abilities[2]);
 
     return ;
+}
+
+int getPokeTypes(POKEMON* pokemon, gpointer sqldb){
+
+    sqlite3* db = (sqlite3*) sqldb;
+    char* query = NULL;
+    char* zErrMsg = NULL;
+    int retCode;
+
+    query = QPokeTypesFromId(pokemon->id);
+
+    retCode = sqlite3_exec(db, query, callbackTypesFromId, pokemon, &zErrMsg);
+    free(query);
+	if(retCode != SQLITE_OK){
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+        return EXIT_FAILURE;
+	}
+
+    return EXIT_SUCCESS;
+}
+
+int getPokeAbilities(POKEMON* pokemon, gpointer sqldb){
+
+    sqlite3* db = (sqlite3*) sqldb;
+    char* query = NULL;
+    char* zErrMsg = NULL;
+    int retCode;
+
+    query = QPokeAbilitiesFromId(pokemon->id);
+
+    retCode = sqlite3_exec(db, query, callbackAbilitiesFromId, pokemon, &zErrMsg);
+    free(query);
+	if(retCode != SQLITE_OK){
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+		return EXIT_FAILURE;
+	}
+
+    return EXIT_SUCCESS;
+}
+
+int getPokeStats(POKEMON* pokemon, gpointer sqldb){
+
+    sqlite3* db = (sqlite3*) sqldb;
+    char* query = NULL;
+    char* zErrMsg = NULL;
+    int retCode;
+
+    query = QPokeStatsFromId(pokemon->id);
+
+    retCode = sqlite3_exec(db, query, callbackStatsFromId, pokemon, &zErrMsg);
+    free(query);
+	if(retCode != SQLITE_OK){
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+		return EXIT_FAILURE;
+	}
+
+    return EXIT_SUCCESS;
 }
 
 void freeInnerPoke(POKEMON* pokemon){

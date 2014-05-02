@@ -22,7 +22,8 @@ char* QPokeIdFromName (char name[]){
 
 	sprintf(buf, "%s%s%s", "SELECT id, species_id, identifier "
 						   "FROM pokemon "
-						   "WHERE identifier = '", name, "';");
+						   "WHERE identifier LIKE '", name, "' "
+						   "ORDER BY species_id;");
 
 	query = strdup(buf);
 
@@ -79,11 +80,12 @@ char* QPokeAbilitiesFromName (char name[]){
 
 	char buf[1024], *query = NULL;
 
-	sprintf(buf, "%s%s%s", "SELECT A.identifier "
+	sprintf(buf, "%s%s%s", "SELECT A.identifier, PA.slot, P.id "
 						   "FROM abilities A, pokemon P, pokemon_abilities PA "
 						   "WHERE P.id = PA.pokemon_id "
 						   "AND PA.ability_id = A.id "
-						   "AND P.identifier = '", name, "';");
+						   "AND P.identifier LIKE '", name, "' "
+						   "ORDER BY P.species_id, P.id, PA.slot;");
 
 	query = strdup(buf);
 
@@ -94,11 +96,13 @@ char* QPokeTypesFromName (char name[]){
 
 	char buf[1024], *query = NULL;
 
-	sprintf(buf, "%s%s%s", "SELECT name "
-						   "FROM type_names T, pokemon_types PT "
-						   "WHERE T.type_id = PT.type_id "
-						   "AND T.local_language_id = 9 "
-						   "AND PT.pokemon_id = '", name, "';");
+	sprintf(buf, "%s%s%s", "SELECT name, slot, P.id "
+                           "FROM type_names T, pokemon_types PT, pokemon P "
+                           "WHERE T.type_id = PT.type_id "
+                           "AND P.id = PT.pokemon_id "
+                           "AND T.local_language_id = 9 "
+                           "AND P.identifier LIKE '", name,"' "
+                           "ORDER BY P.species_id, P.id, slot;");
 
 	query = strdup(buf);
 
@@ -109,10 +113,11 @@ char* QPokeStatsFromName (char name[]){
 
 	char buf[1024], *query = NULL;
 
-	sprintf(buf, "%s%s%s", "SELECT base_stat "
+	sprintf(buf, "%s%s%s", "SELECT base_stat, stat_id, pokemon_id "
 						   "FROM pokemon P, pokemon_stats PS "
 						   "WHERE P.id = PS.pokemon_id "
-						   "AND P.identifier = '", name, "';");
+						   "AND P.identifier LIKE '", name, "'"
+						   "ORDER BY P.species_id, P.id, stat_id;");
 
 	query = strdup(buf);
 

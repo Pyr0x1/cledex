@@ -11,7 +11,7 @@ Thanks to Veekun for the great database: https://github.com/veekun/pokedex.
 
 
 Installation
-------------
+======
 
 Pretty classic:
 
@@ -24,10 +24,16 @@ To uninstall:
 * make uninstall (be root)
 
 Usage
-------------
+======
 
 cledex "pokemon name"
 
-eg. 
-cledex alakazam  
+eg.   
+cledex alakazam
 cledex "lucario mega"
+
+Partial search is now supported, so you can use "%" to find partial matches
+
+eg.  
+cledex charm% -> finds Charmander and Charmeleon
+cledex %eon -> finds Charmeleon, Vaporeon, Jolteon, Flareon, ...

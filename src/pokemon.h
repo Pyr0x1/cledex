@@ -1,3 +1,6 @@
+#include <glib.h>
+#include <sqlite3.h>
+
 typedef struct pokemon{
 
 	int id;
@@ -10,9 +13,13 @@ typedef struct pokemon{
 }POKEMON;
 
 POKEMON* pokeCreate();
+GSList* pokeListInit(sqlite3* db, char name[]); // initializes list with IDs resulting from name search, if it returns NULL there was an error
 void pokePrint(POKEMON* pokemon);
 void convertLineToSpace(char* str);
 void convertSpaceToLine(char* str);
 void convertAllStrings(POKEMON* pokemon);
+int getPokeTypes(POKEMON* pokemon, gpointer sqldb); // these functions return int, but the value is really never used since it is called in a foreach (anyway if the list is initialized they shouldn't fail)
+int getPokeAbilities(POKEMON* pokemon, gpointer sqldb);
+int getPokeStats(POKEMON* pokemon, gpointer sqldb);
 void freeInnerPoke(POKEMON* pokemon);
 void freePoke(POKEMON* pokemon);

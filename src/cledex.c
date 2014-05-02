@@ -1,101 +1,51 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sqlite3.h>
 #include <string.h>
+#include <sqlite3.h>
+#include <glib.h>
 #include "queries.h"
 #include "callbacks.h"
 #include "pokemon.h"
 
 int main(int argc, char* argv[]) {
 
-	sqlite3 *db; 			// SQLite database
-	char *zErrMsg = NULL;	// string to hold errors
+	sqlite3* db; 			// SQLite database
 	int retCode;			// return code used for various functions
-	char *query = NULL;     // string to hold various queries (freed and reallocated every time to avoid memory leaks)
-	POKEMON *pokemon = NULL;
+    GSList* pokeList = NULL;
 
     if(argc != 2){
         fprintf(stderr, "Invalid Argument.\nUsage: cldex \"pokemon name\"\n");
         return EXIT_FAILURE;
     }
 
-	pokemon = pokeCreate();
-
 	retCode = sqlite3_open("/usr/local/share/cledex/Database/pokemon.sqlite", &db);
 
 	if(retCode){
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
 		sqlite3_close(db);
-		freePoke(pokemon);
 		return(EXIT_FAILURE);
 	}
 
     convertSpaceToLine(argv[1]);
 
-	query = QPokeIdFromName(argv[1]);
+    if((pokeList = pokeListInit(db, argv[1])) == NULL){ // error, free DB and List and exit
+        g_slist_free_full(pokeList, (GDestroyNotify) freePoke);
+		sqlite3_close(db);
+        return EXIT_FAILURE;
+    }
 
-	retCode = sqlite3_exec(db, query, callbackIdFromName, pokemon, &zErrMsg);
-	if(retCode!=SQLITE_OK){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-		freePoke(pokemon);
-		free(query);
-		return(EXIT_FAILURE);
-	}
-	if(pokemon->id == 0){
-        fprintf(stderr, "Entry not found, make sure the name is correct.\n");
-        freePoke(pokemon);
-		free(query);
-		return(EXIT_FAILURE);
-	}
-
-
-	free(query);
-
-	query = QPokeTypesFromId(pokemon->id);
-
-	retCode = sqlite3_exec(db, query, callbackTypesFromId, pokemon, &zErrMsg);
-	if(retCode!=SQLITE_OK){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-		freePoke(pokemon);
-		free(query);
-		return(EXIT_FAILURE);
-	}
-
-	free(query);
-
-    query = QPokeAbilitiesFromId(pokemon->id);
-
-    retCode = sqlite3_exec(db, query, callbackAbilitiesFromId, pokemon, &zErrMsg);
-	if(retCode!=SQLITE_OK){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-		freePoke(pokemon);
-		free(query);
-		return(EXIT_FAILURE);
-	}
-
-    free(query);
-
-    query = QPokeStatsFromId(pokemon->id);
-
-    retCode = sqlite3_exec(db, query, callbackStatsFromId, pokemon, &zErrMsg);
-	if(retCode!=SQLITE_OK){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-		freePoke(pokemon);
-		free(query);
-		return(EXIT_FAILURE);
-	}
+    g_slist_foreach(pokeList, (GFunc) getPokeTypes, (gpointer) db);
+    g_slist_foreach(pokeList, (GFunc) getPokeAbilities, (gpointer) db);
+    g_slist_foreach(pokeList, (GFunc) getPokeStats, (gpointer) db);
 
 	sqlite3_close(db);
 
-    convertAllStrings(pokemon);
+    g_slist_foreach(pokeList, (GFunc) convertAllStrings, NULL);
+    g_slist_foreach(pokeList, (GFunc) pokePrint, NULL);
+    printf("\n");
+    printf("--------------------\n\n");
 
-	pokePrint(pokemon);
-
-	freePoke(pokemon);
+	g_slist_free_full(pokeList, (GDestroyNotify) freePoke);
 
 	return EXIT_SUCCESS;
 }
