@@ -5,7 +5,7 @@
 
 char* QPokeNameFromId (unsigned int id){
 
-	char buf[1024], *query = NULL;
+	char buf[QBUF], *query = NULL;
 
 	sprintf(buf, "%s%d%s", "SELECT id, identifier "
 						   "FROM pokemon "
@@ -18,7 +18,7 @@ char* QPokeNameFromId (unsigned int id){
 
 char* QPokeIdFromName (char name[]){
 
-	char buf[1024], *query = NULL;
+	char buf[QBUF], *query = NULL;
 
 	sprintf(buf, "%s%s%s", "SELECT id, species_id, identifier "
 						   "FROM pokemon "
@@ -32,7 +32,7 @@ char* QPokeIdFromName (char name[]){
 
 char* QPokeAbilitiesFromId (unsigned int id){
 
-	char buf[1024], *query = NULL;
+	char buf[QBUF], *query = NULL;
 
 	sprintf(buf, "%s%d%s", "SELECT A.identifier, PA.slot "
 						   "FROM abilities A, pokemon P, pokemon_abilities PA "
@@ -47,7 +47,7 @@ char* QPokeAbilitiesFromId (unsigned int id){
 
 char* QPokeTypesFromId (unsigned int id){
 
-	char buf[1024], *query = NULL;
+	char buf[QBUF], *query = NULL;
 
 	sprintf(buf, "%s%d%s", "SELECT name, slot "
 						   "FROM type_names T, pokemon_types PT "
@@ -63,7 +63,7 @@ char* QPokeTypesFromId (unsigned int id){
 
 char* QPokeStatsFromId (unsigned int id){
 
-	char buf[1024], *query = NULL;
+	char buf[QBUF], *query = NULL;
 
 	sprintf(buf, "%s%d%s", "SELECT base_stat, stat_id "
 						   "FROM pokemon P, pokemon_stats PS "
@@ -75,10 +75,24 @@ char* QPokeStatsFromId (unsigned int id){
 	return query;
 }
 
+char* QPokeEggsFromId (unsigned int id){
+
+    char buf[QBUF], *query = NULL;
+
+	sprintf(buf, "%s%d%s", "SELECT identifier "
+                           "FROM pokemon_egg_groups PEG, egg_groups EG "
+                           "WHERE EG.id = PEG.egg_group_id "
+                           "AND PEG.species_id = ", id, " "
+                           "ORDER BY PEG.species_id, PEG.egg_group_id;");
+
+	query = strdup(buf);
+
+    return query;
+}
 
 char* QPokeAbilitiesFromName (char name[]){
 
-	char buf[1024], *query = NULL;
+	char buf[QBUF], *query = NULL;
 
 	sprintf(buf, "%s%s%s", "SELECT A.identifier, PA.slot, P.id "
 						   "FROM abilities A, pokemon P, pokemon_abilities PA "
@@ -94,7 +108,7 @@ char* QPokeAbilitiesFromName (char name[]){
 
 char* QPokeTypesFromName (char name[]){
 
-	char buf[1024], *query = NULL;
+	char buf[QBUF], *query = NULL;
 
 	sprintf(buf, "%s%s%s", "SELECT name, slot, P.id "
                            "FROM type_names T, pokemon_types PT, pokemon P "
@@ -111,7 +125,7 @@ char* QPokeTypesFromName (char name[]){
 
 char* QPokeStatsFromName (char name[]){
 
-	char buf[1024], *query = NULL;
+	char buf[QBUF], *query = NULL;
 
 	sprintf(buf, "%s%s%s", "SELECT base_stat, stat_id, pokemon_id "
 						   "FROM pokemon P, pokemon_stats PS "

@@ -1,7 +1,7 @@
 cledex
 ======
 
-A simple Linux command line pokedex written in C.
+A simple Linux command line pokédex written in C.
 
 <a href="http://it.tinypic.com?ref=zjwfic" target="_blank"><img src="http://i58.tinypic.com/zjwfic.png" border="0" alt="Image and video hosting by TinyPic"></a>
 
@@ -29,11 +29,45 @@ Usage
 cledex "pokemon name"
 
 eg.   
+```bash
 cledex alakazam  
+```
+```bash
 cledex "lucario mega"  
+```
 
 Partial search is now supported, so you can use "%" to find partial matches  
 
 eg.  
+```bash
 cledex charm% -> finds Charmander and Charmeleon  
+```
+```bash
 cledex %eon -> finds Charmeleon, Vaporeon, Jolteon, Flareon, ...  
+```
+
+Output
+======
+
+A list of pokémon with following format
+
+--------------------
+
+	[ID]	Name		Type 1 / Type 2
+
+			Ability 1     
+			Ability 2
+			Ability 3
+
+			PS: value
+			Atk: value
+			Def: value
+			SpAtk: value
+			SpDef: value
+			Speed: value
+
+			Egg Group 1
+			Egg Group 2
+
+--------------------
+

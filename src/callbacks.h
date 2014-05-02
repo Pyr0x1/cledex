@@ -14,3 +14,4 @@ int callbackAbilitiesFromId(void *pokemon, int argc, char **argv, char **azColNa
 int callbackAbilitiesFromName(void *pokemon, int argc, char **argv, char **azColName);
 int callbackStatsFromId(void *pokemon, int argc, char **argv, char **azColName);
 int callbackStatsFromName(void *pokemon, int argc, char **argv, char **azColName);
+int callbackEggsFromId(void *pokemon, int argc, char **argv, char **azColName);

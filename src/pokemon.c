@@ -20,6 +20,8 @@ POKEMON* pokeCreate(){
 	pokemon->abilities[0] = NULL;
 	pokemon->abilities[1] = NULL;
 	pokemon->abilities[2] = NULL;
+	pokemon->eggGroups[0] = NULL;
+	pokemon->eggGroups[1] = NULL;
 
 	return pokemon;
 }
@@ -80,7 +82,15 @@ void pokePrint(POKEMON* pokemon){
     printf(KYEL "\t\tDef: %d\n" KNRM, pokemon->stats[2]);
 	printf(KCYN "\t\tSpAtk: %d\n" KNRM, pokemon->stats[3]);
 	printf(KGRN "\t\tSpDef: %d\n" KNRM, pokemon->stats[4]);
-	printf(KMAG "\t\tSpeed: %d\n" KNRM, pokemon->stats[5]);
+    printf(KMAG "\t\tSpeed: %d\n" KNRM, pokemon->stats[5]);
+
+    printf("\n");
+
+	if(pokemon->eggGroups[0] != NULL)
+        printf("\t\t%s\n", pokemon->eggGroups[0]);
+
+    if(pokemon->eggGroups[1] != NULL)
+        printf("\t\t%s\n", pokemon->eggGroups[1]);
 
 	return ;
 }
@@ -133,6 +143,12 @@ void convertAllStrings(POKEMON* pokemon){
 
     if(pokemon->abilities[2] != NULL)
         convertLineToSpace(pokemon->abilities[2]);
+
+    if(pokemon->eggGroups[0] != NULL)
+        convertLineToSpace(pokemon->eggGroups[0]);
+
+    if(pokemon->eggGroups[1] != NULL)
+        convertLineToSpace(pokemon->eggGroups[1]);
 
     return ;
 }
@@ -197,6 +213,26 @@ int getPokeStats(POKEMON* pokemon, gpointer sqldb){
     return EXIT_SUCCESS;
 }
 
+int getPokeEggs(POKEMON* pokemon, gpointer sqldb){
+
+    sqlite3* db = (sqlite3*) sqldb;
+    char* query = NULL;
+    char* zErrMsg = NULL;
+    int retCode;
+
+    query = QPokeEggsFromId(pokemon->id);
+
+    retCode = sqlite3_exec(db, query, callbackEggsFromId, pokemon, &zErrMsg);
+    free(query);
+	if(retCode != SQLITE_OK){
+		fprintf(stderr, "SQL error: %s\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+		return EXIT_FAILURE;
+	}
+
+    return EXIT_SUCCESS;
+}
+
 void freeInnerPoke(POKEMON* pokemon){
 
 	free(pokemon->name);
@@ -205,6 +241,8 @@ void freeInnerPoke(POKEMON* pokemon){
 	free(pokemon->abilities[0]);
 	free(pokemon->abilities[1]);
 	free(pokemon->abilities[2]);
+	free(pokemon->eggGroups[0]);
+	free(pokemon->eggGroups[1]);
 
 	return ;
 }

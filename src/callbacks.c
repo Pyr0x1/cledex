@@ -95,3 +95,15 @@ int callbackStatsFromName(void *param, int argc, char **argv, char **azColName){
 
     return 0;
 }
+
+int callbackEggsFromId(void *pokemon, int argc, char **argv, char **azColName){
+
+    POKEMON* poke = (POKEMON*) pokemon;
+
+    if(poke->eggGroups[0] == NULL)
+        poke->eggGroups[0] = strdup(argv[0]);
+    else
+        poke->eggGroups[1] = strdup(argv[0]);
+
+	return 0;
+}

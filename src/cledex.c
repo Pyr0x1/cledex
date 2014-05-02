@@ -37,6 +37,7 @@ int main(int argc, char* argv[]) {
     g_slist_foreach(pokeList, (GFunc) getPokeTypes, (gpointer) db);
     g_slist_foreach(pokeList, (GFunc) getPokeAbilities, (gpointer) db);
     g_slist_foreach(pokeList, (GFunc) getPokeStats, (gpointer) db);
+    g_slist_foreach(pokeList, (GFunc) getPokeEggs, (gpointer) db);
 
 	sqlite3_close(db);
 
