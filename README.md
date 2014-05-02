@@ -29,11 +29,11 @@ Usage
 cledex "pokemon name"
 
 eg.   
-cledex alakazam
-cledex "lucario mega"
+cledex alakazam  
+cledex "lucario mega"  
 
-Partial search is now supported, so you can use "%" to find partial matches
+Partial search is now supported, so you can use "%" to find partial matches  
 
 eg.  
-cledex charm% -> finds Charmander and Charmeleon
-cledex %eon -> finds Charmeleon, Vaporeon, Jolteon, Flareon, ...
+cledex charm% -> finds Charmander and Charmeleon  
+cledex %eon -> finds Charmeleon, Vaporeon, Jolteon, Flareon, ...  
