@@ -131,6 +131,17 @@ void convertSpaceToLine(char* str){
     return ;
 }
 
+void convertStarToPerc(char* str){
+
+    int i;
+
+    for(i = 0; i < strlen(str); i++)
+        if(str[i] == '*')
+            str[i] = '%';
+
+    return ;
+}
+
 void convertAllStrings(POKEMON* pokemon){
 
     convertLineToSpace(pokemon->name);

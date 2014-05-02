@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
 	}
 
     convertSpaceToLine(argv[1]);
+    convertStarToPerc(argv[1]);
 
     if((pokeList = pokeListInit(db, argv[1])) == NULL){ // error, free DB and List and exit
         g_slist_free_full(pokeList, (GDestroyNotify) freePoke);

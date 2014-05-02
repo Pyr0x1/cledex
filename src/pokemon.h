@@ -18,6 +18,7 @@ GSList* pokeListInit(sqlite3* db, char name[]); // initializes list with IDs res
 void pokePrint(POKEMON* pokemon);
 void convertLineToSpace(char* str);
 void convertSpaceToLine(char* str);
+void convertStarToPerc(char* str);
 void convertAllStrings(POKEMON* pokemon);
 int getPokeTypes(POKEMON* pokemon, gpointer sqldb); // these functions return int, but the value is really never used since it is called in a foreach (anyway if the list is initialized they shouldn't fail)
 int getPokeAbilities(POKEMON* pokemon, gpointer sqldb);

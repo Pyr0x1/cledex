@@ -36,14 +36,14 @@ cledex alakazam
 cledex "lucario mega"  
 ```
 
-Partial search is now supported, so you can use "%" to find partial matches  
+Partial search is now supported, so you can use "%" or "*" to find partial matches  
 
 eg.  
 ```bash
 cledex charm% -> finds Charmander and Charmeleon  
 ```
 ```bash
-cledex %eon -> finds Charmeleon, Vaporeon, Jolteon, Flareon, ...  
+cledex *eon -> finds Charmeleon, Vaporeon, Jolteon, Flareon, ...  
 ```
 
 Output
