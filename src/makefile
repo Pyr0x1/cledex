@@ -1,11 +1,10 @@
 all: *.c *.h
-	gcc *.c `pkg-config --cflags --libs glib-2.0` -l sqlite3 -o cledex
+	gcc -O *.c `pkg-config --cflags --libs glib-2.0` -l sqlite3 -o cledex
 
 install: 
-	cp cledex /usr/local/bin
+	mv cledex /usr/local/bin
 	mkdir -p /usr/local/share/cledex
-	cp -r ../Database/ /usr/local/share/cledex
-	rm cledex
+	cp -r ../database/ /usr/local/share/cledex
 
 uninstall:
 	rm /usr/local/bin/cledex

@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
-	retCode = sqlite3_open("/usr/local/share/cledex/Database/pokemon.sqlite", &db);
+	retCode = sqlite3_open("/usr/local/share/cledex/database/pokemon.sqlite", &db);
 
 	if(retCode){
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
