@@ -107,3 +107,12 @@ int callbackEggsFromId(void *pokemon, int argc, char **argv, char **azColName){
 
 	return 0;
 }
+
+int callbackLangIdFromName(void *id, int argc, char **argv, char **azColName){
+
+    int* retValue = (int*) id;
+
+    *retValue = atoi(argv[0]);
+
+    return 0;
+}

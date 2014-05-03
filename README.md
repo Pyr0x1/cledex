@@ -26,19 +26,22 @@ To uninstall:
 Usage
 ======
 
-cledex "pokemon name"
+cledex [-l language] "pokemon name"
 
-eg.   
+**eg.**   
 ```bash
 cledex alakazam  
 ```
 ```bash
 cledex "lucario mega"  
 ```
+```bash
+cledex -l it charizard  
+```
 
-Partial search is now supported, so you can use "%" or "*" to find partial matches  
+Partial search is supported, so you can use "%" or "*" to find partial matches  
 
-eg.  
+**eg.**  
 ```bash
 cledex charm%  
 ```

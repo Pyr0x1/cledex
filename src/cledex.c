@@ -6,15 +6,17 @@
 #include "queries.h"
 #include "callbacks.h"
 #include "pokemon.h"
+#include "languages.h"
 
 int main(int argc, char* argv[]) {
 
-	sqlite3* db; 			// SQLite database
-	int retCode;			// return code used for various functions
+	sqlite3* db;
+	int retCode, lang, argIndex = 1;
     GSList* pokeList = NULL;
+    LOCALDB ldb;
 
-    if(argc != 2){
-        fprintf(stderr, "Invalid Argument.\nUsage: cldex \"pokemon name\"\n");
+    if(argc < 2){
+        fprintf(stderr, "Invalid Argument.\nUsage: cldex [-l language] \"pokemon name\"\n");
         return EXIT_FAILURE;
     }
 
@@ -26,19 +28,32 @@ int main(int argc, char* argv[]) {
 		return(EXIT_FAILURE);
 	}
 
-    convertSpaceToLine(argv[1]);
-    convertStarToPerc(argv[1]);
+    if(argc == 2 && argv[1][0] != '-'){
+        lang = 9;
+        argIndex = 1; // argvalue containing pokemon name, in this case the second one (no language choice)
+    }
+    else if(argc == 4 && ((strcmp(argv[1], "-l") == 0))){
+        if((lang = isValidLang(argv[2], db)) == 0) // if language isn't valid set it to default
+            lang = 9;
+        argIndex = 3;
+    }
 
-    if((pokeList = pokeListInit(db, argv[1])) == NULL){ // error, free DB and List and exit
+    convertSpaceToLine(argv[argIndex]);
+    convertStarToPerc(argv[argIndex]);
+
+    if((pokeList = pokeListInit(db, argv[argIndex])) == NULL){ // error, free DB and List and exit
         g_slist_free_full(pokeList, (GDestroyNotify) freePoke);
 		sqlite3_close(db);
         return EXIT_FAILURE;
     }
 
-    g_slist_foreach(pokeList, (GFunc) getPokeTypes, (gpointer) db);
-    g_slist_foreach(pokeList, (GFunc) getPokeAbilities, (gpointer) db);
+    ldb.db = db;
+    ldb.lang = lang;
+
+    g_slist_foreach(pokeList, (GFunc) getPokeTypes, (gpointer) &ldb);
+    g_slist_foreach(pokeList, (GFunc) getPokeAbilities, (gpointer) &ldb);
     g_slist_foreach(pokeList, (GFunc) getPokeStats, (gpointer) db);
-    g_slist_foreach(pokeList, (GFunc) getPokeEggs, (gpointer) db);
+    g_slist_foreach(pokeList, (GFunc) getPokeEggs, (gpointer) &ldb);
 
 	sqlite3_close(db);
 

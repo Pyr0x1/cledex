@@ -30,30 +30,32 @@ char* QPokeIdFromName (char name[]){
 	return query;
 }
 
-char* QPokeAbilitiesFromId (unsigned int id){
+char* QPokeAbilitiesFromId (unsigned int id, int lang){
 
 	char buf[QBUF], *query = NULL;
 
-	sprintf(buf, "%s%d%s", "SELECT A.identifier, PA.slot "
-						   "FROM abilities A, pokemon P, pokemon_abilities PA "
-						   "WHERE P.id = PA.pokemon_id "
-						   "AND PA.ability_id = A.id "
-						   "AND P.id = ", id, ";");
+	sprintf(buf, "%s%d%s%d%s", "SELECT A.name, PA.slot, P.id "
+                                "FROM ability_names A, pokemon P, pokemon_abilities PA "
+                                "WHERE P.id = PA.pokemon_id "
+                                "AND PA.ability_id = A.ability_id "
+                                "AND P.id = ", id, " "
+                                "AND A.local_language_id = ", lang, " "
+                                "ORDER BY P.species_id, P.id, PA.slot;");
 
 	query = strdup(buf);
 
 	return query;
 }
 
-char* QPokeTypesFromId (unsigned int id){
+char* QPokeTypesFromId (unsigned int id, int lang){
 
 	char buf[QBUF], *query = NULL;
 
-	sprintf(buf, "%s%d%s", "SELECT name, slot "
-						   "FROM type_names T, pokemon_types PT "
-						   "WHERE T.type_id = PT.type_id "
-						   "AND T.local_language_id = 9 "
-						   "AND PT.pokemon_id = ", id, ";");
+	sprintf(buf, "%s%d%s%d%s", "SELECT name, slot "
+                               "FROM type_names T, pokemon_types PT "
+                               "WHERE T.type_id = PT.type_id "
+                               "AND T.local_language_id = ", lang, " "
+                               "AND PT.pokemon_id = ", id, ";");
 
 	query = strdup(buf);
 
@@ -75,15 +77,16 @@ char* QPokeStatsFromId (unsigned int id){
 	return query;
 }
 
-char* QPokeEggsFromId (unsigned int id){
+char* QPokeEggsFromId (unsigned int id, int lang){
 
     char buf[QBUF], *query = NULL;
 
-	sprintf(buf, "%s%d%s", "SELECT identifier "
-                           "FROM pokemon_egg_groups PEG, egg_groups EG "
-                           "WHERE EG.id = PEG.egg_group_id "
-                           "AND PEG.species_id = ", id, " "
-                           "ORDER BY PEG.species_id, PEG.egg_group_id;");
+	sprintf(buf, "%s%d%s%d%s", "SELECT name "
+                               "FROM pokemon_egg_groups PEG, egg_group_prose EG "
+                               "WHERE EG.egg_group_id = PEG.egg_group_id "
+                               "AND PEG.species_id = ", id, " "
+                               "AND EG.local_language_id = ", lang, " "
+                               "ORDER BY PEG.species_id, PEG.egg_group_id;");
 
 	query = strdup(buf);
 
@@ -94,29 +97,29 @@ char* QPokeAbilitiesFromName (char name[]){
 
 	char buf[QBUF], *query = NULL;
 
-	sprintf(buf, "%s%s%s", "SELECT A.identifier, PA.slot, P.id "
-						   "FROM abilities A, pokemon P, pokemon_abilities PA "
-						   "WHERE P.id = PA.pokemon_id "
-						   "AND PA.ability_id = A.id "
-						   "AND P.identifier LIKE '", name, "' "
-						   "ORDER BY P.species_id, P.id, PA.slot;");
+		sprintf(buf, "%s%s%s", "SELECT A.identifier, PA.slot, P.id "
+                               "FROM abilities A, pokemon P, pokemon_abilities PA "
+                               "WHERE P.id = PA.pokemon_id "
+                               "AND PA.ability_id = A.id "
+                               "AND P.identifier LIKE '", name, "' "
+                               "ORDER BY P.species_id, P.id, PA.slot;");
 
 	query = strdup(buf);
 
 	return query;
 }
 
-char* QPokeTypesFromName (char name[]){
+char* QPokeTypesFromName (char name[], int lang){
 
 	char buf[QBUF], *query = NULL;
 
-	sprintf(buf, "%s%s%s", "SELECT name, slot, P.id "
-                           "FROM type_names T, pokemon_types PT, pokemon P "
-                           "WHERE T.type_id = PT.type_id "
-                           "AND P.id = PT.pokemon_id "
-                           "AND T.local_language_id = 9 "
-                           "AND P.identifier LIKE '", name,"' "
-                           "ORDER BY P.species_id, P.id, slot;");
+	sprintf(buf, "%s%id%s%s%s", "SELECT name, slot, P.id "
+                                "FROM type_names T, pokemon_types PT, pokemon P "
+                                "WHERE T.type_id = PT.type_id "
+                                "AND P.id = PT.pokemon_id "
+                                "AND T.local_language_id = ", lang, " "
+                                "AND P.identifier LIKE '", name,"' "
+                                "ORDER BY P.species_id, P.id, slot;");
 
 	query = strdup(buf);
 
@@ -132,6 +135,20 @@ char* QPokeStatsFromName (char name[]){
 						   "WHERE P.id = PS.pokemon_id "
 						   "AND P.identifier LIKE '", name, "'"
 						   "ORDER BY P.species_id, P.id, stat_id;");
+
+	query = strdup(buf);
+
+	return query;
+
+}
+
+char* QPokeLangIdFromName (char name[]){
+
+	char buf[QBUF], *query = NULL;
+
+	sprintf(buf, "%s%s%s", "SELECT id "
+                           "FROM languages "
+                           "WHERE identifier = '", name, "';");
 
 	query = strdup(buf);
 

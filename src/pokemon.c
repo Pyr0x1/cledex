@@ -7,6 +7,7 @@
 #include "colors.h"
 #include "queries.h"
 #include "callbacks.h"
+#include "languages.h"
 
 POKEMON* pokeCreate(){
 
@@ -60,7 +61,8 @@ void pokePrint(POKEMON* pokemon){
     printf("\n");
     printf("--------------------\n\n");
 	printf("\t[%d]\t%s\t\t", pokemon->realId, pokemon->name);
-	printf("%s", pokemon->types[0]);
+	if(pokemon->types[0] != NULL)
+        printf("%s", pokemon->types[0]);
 
 	if(pokemon->types[1] != NULL)
         printf(" / %s", pokemon->types[1]);
@@ -166,12 +168,14 @@ void convertAllStrings(POKEMON* pokemon){
 
 int getPokeTypes(POKEMON* pokemon, gpointer sqldb){
 
-    sqlite3* db = (sqlite3*) sqldb;
+    LOCALDB* ldb = (LOCALDB*) sqldb;
+    sqlite3* db = ldb->db;
     char* query = NULL;
     char* zErrMsg = NULL;
     int retCode;
+    int lang = ldb->lang;
 
-    query = QPokeTypesFromId(pokemon->id);
+    query = QPokeTypesFromId(pokemon->id, lang);
 
     retCode = sqlite3_exec(db, query, callbackTypesFromId, pokemon, &zErrMsg);
     free(query);
@@ -186,12 +190,14 @@ int getPokeTypes(POKEMON* pokemon, gpointer sqldb){
 
 int getPokeAbilities(POKEMON* pokemon, gpointer sqldb){
 
-    sqlite3* db = (sqlite3*) sqldb;
+    LOCALDB* ldb = (LOCALDB*) sqldb;
+    sqlite3* db = ldb->db;
     char* query = NULL;
     char* zErrMsg = NULL;
     int retCode;
+    int lang = ldb->lang;
 
-    query = QPokeAbilitiesFromId(pokemon->id);
+    query = QPokeAbilitiesFromId(pokemon->id, lang);
 
     retCode = sqlite3_exec(db, query, callbackAbilitiesFromId, pokemon, &zErrMsg);
     free(query);
@@ -226,12 +232,14 @@ int getPokeStats(POKEMON* pokemon, gpointer sqldb){
 
 int getPokeEggs(POKEMON* pokemon, gpointer sqldb){
 
-    sqlite3* db = (sqlite3*) sqldb;
+    LOCALDB* ldb = (LOCALDB*) sqldb;
+    sqlite3* db = ldb->db;
     char* query = NULL;
     char* zErrMsg = NULL;
     int retCode;
+    int lang = ldb->lang;
 
-    query = QPokeEggsFromId(pokemon->id);
+    query = QPokeEggsFromId(pokemon->realId, lang); // realId makes the egg group as undiscovered for megaevos, if you want not to appear at all put id
 
     retCode = sqlite3_exec(db, query, callbackEggsFromId, pokemon, &zErrMsg);
     free(query);

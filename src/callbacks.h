@@ -1,3 +1,5 @@
+#include <glib.h>
+
 typedef struct param{
 
     GSList* pokeList;
@@ -15,3 +17,4 @@ int callbackAbilitiesFromName(void *pokemon, int argc, char **argv, char **azCol
 int callbackStatsFromId(void *pokemon, int argc, char **argv, char **azColName);
 int callbackStatsFromName(void *pokemon, int argc, char **argv, char **azColName);
 int callbackEggsFromId(void *pokemon, int argc, char **argv, char **azColName);
+int callbackLangIdFromName(void *id, int argc, char **argv, char **azColName);
