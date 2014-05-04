@@ -26,7 +26,9 @@ To uninstall:
 Usage
 ======
 
-cledex [-l language] "pokemon name"
+cledex [-l language] "pokemon name"  
+
+(note: currently only japanese, french, german, spanish, italian and english language are fully supported)
 
 **eg.**   
 ```bash
