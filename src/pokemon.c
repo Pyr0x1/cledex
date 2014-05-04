@@ -16,6 +16,7 @@ POKEMON* pokeCreate(){
 	pokemon = calloc(1, sizeof(POKEMON));
 
 	pokemon->name = NULL;
+	pokemon->identifier = NULL;
 	pokemon->types[0] = NULL;
 	pokemon->types[1] = NULL;
 	pokemon->abilities[0] = NULL;
@@ -27,14 +28,14 @@ POKEMON* pokeCreate(){
 	return pokemon;
 }
 
-GSList* pokeListInit(sqlite3* db, char name[]){
+GSList* pokeListInit(sqlite3* db, int lang, char name[]){
 
     char* zErrMsg = NULL;
     int retCode;
     char* query = NULL;
     GSList* pokeList = NULL;
 
-    query = QPokeIdFromName(name);
+    query = QPokeIdFromName(name, lang);
 
     retCode = sqlite3_exec(db, query, callbackIdFromName, &pokeList, &zErrMsg);
     free(query);
@@ -166,6 +167,45 @@ void convertAllStrings(POKEMON* pokemon){
     return ;
 }
 
+void fixMegaName(POKEMON* pokemon){
+
+    char buff[QBUF] = "\0";
+    char* identifier = NULL;
+    char* token = NULL;
+    int isMega = FALSE;
+
+    if(pokemon->id > 10000){ // if this is a megaevo
+
+        identifier = strdup(pokemon->identifier); // since strtok edits original string, we copy first
+
+        token = strtok(identifier, "-");
+
+        while(token != NULL) {
+
+            token[0] = toupper(token[0]); // first char upper case
+
+            if(isMega == TRUE) // until we don't match mega token this won't do anything
+                strcat(buff, token); // adds token to buffer
+
+            if(strcmp(token, "Mega") == 0){ // we match mega token, write "Mega Pokemon " in buffer, then the upper condition will hold for the remaining tokens
+                isMega = TRUE;
+                strcat(buff, token);
+                strcat(buff, " ");
+                strcat(buff, pokemon->name);
+                strcat(buff, " ");
+            }
+
+            token = strtok(NULL, "-");
+       }
+
+        free(identifier); // frees the string we used for strtok since we don't need it anymore
+        free(pokemon->name);
+        pokemon->name = strdup(buff); // saves the new name
+    }
+
+    return ;
+}
+
 int getPokeTypes(POKEMON* pokemon, gpointer sqldb){
 
     LOCALDB* ldb = (LOCALDB*) sqldb;
@@ -255,6 +295,7 @@ int getPokeEggs(POKEMON* pokemon, gpointer sqldb){
 void freeInnerPoke(POKEMON* pokemon){
 
 	free(pokemon->name);
+	free(pokemon->identifier);
 	free(pokemon->types[0]);
 	free(pokemon->types[1]);
 	free(pokemon->abilities[0]);

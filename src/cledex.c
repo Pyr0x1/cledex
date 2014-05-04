@@ -41,13 +41,13 @@ int main(int argc, char* argv[]) {
     convertSpaceToLine(argv[argIndex]);
     convertStarToPerc(argv[argIndex]);
 
-    if((pokeList = pokeListInit(db, argv[argIndex])) == NULL){ // error, free DB and List and exit
+    if((pokeList = pokeListInit(db, lang, argv[argIndex])) == NULL){ // error, free DB and List and exit
         g_slist_free_full(pokeList, (GDestroyNotify) freePoke);
 		sqlite3_close(db);
         return EXIT_FAILURE;
     }
 
-    ldb.db = db;
+    ldb.db = db; // created to pass more values to g_slist_foreach
     ldb.lang = lang;
 
     g_slist_foreach(pokeList, (GFunc) getPokeTypes, (gpointer) &ldb);

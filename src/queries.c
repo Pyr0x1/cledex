@@ -16,14 +16,15 @@ char* QPokeNameFromId (unsigned int id){
 	return query;
 }
 
-char* QPokeIdFromName (char name[]){
+char* QPokeIdFromName (char name[], int lang){
 
 	char buf[QBUF], *query = NULL;
 
-	sprintf(buf, "%s%s%s", "SELECT id, species_id, identifier "
-						   "FROM pokemon "
-						   "WHERE identifier LIKE '", name, "' "
-						   "ORDER BY species_id;");
+	sprintf(buf, "%s%s%s%d%s", "SELECT id, species_id, name, identifier "
+                               "FROM pokemon P, pokemon_species_names PN "
+                               "WHERE P.species_id = PN.pokemon_species_id "
+                               "AND P.identifier LIKE '", name, "' "
+                               "AND PN.local_language_id = ", lang, ";");
 
 	query = strdup(buf);
 

@@ -16,6 +16,9 @@ int callbackIdFromName(void *plist, int argc, char **argv, char **azColName){
     pokemon->id = atoi(argv[0]);
     pokemon->realId = atoi(argv[1]);
 	pokemon->name = strdup(argv[2]);
+	pokemon->identifier = strdup(argv[3]);
+
+	fixMegaName(pokemon);
 
 	*pokeList = g_slist_prepend(*pokeList, pokemon);
 
