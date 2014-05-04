@@ -28,7 +28,7 @@ Usage
 
 cledex [-l language] "pokemon name"  
 
-(note: currently only japanese, french, german, spanish, italian and english language are fully supported)
+(note: currently only japanese, french, german, spanish, italian and english languages are fully supported)  
 
 **eg.**   
 ```bash
