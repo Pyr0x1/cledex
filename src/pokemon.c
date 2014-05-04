@@ -80,17 +80,17 @@ void pokePrint(POKEMON* pokemon){
 
     printf("\n");
 
-    printf(KRED "\t\tPS: %d\n" KNRM, pokemon->stats[0]);
-    printf(KBLU "\t\tAtk: %d\n" KNRM, pokemon->stats[1]);
-    printf(KYEL "\t\tDef: %d\n" KNRM, pokemon->stats[2]);
-	printf(KCYN "\t\tSpAtk: %d\n" KNRM, pokemon->stats[3]);
-	printf(KGRN "\t\tSpDef: %d\n" KNRM, pokemon->stats[4]);
-    printf(KMAG "\t\tSpeed: %d\n" KNRM, pokemon->stats[5]);
+    printf("\t\t" KRED "PS: %d\n" KNRM, pokemon->stats[0]);
+    printf("\t\t" KBLU "Atk: %d\n" KNRM, pokemon->stats[1]);
+    printf("\t\t" KYEL "Def: %d\n" KNRM, pokemon->stats[2]);
+	printf("\t\t" KCYN "SpAtk: %d\n" KNRM, pokemon->stats[3]);
+	printf("\t\t" KGRN "SpDef: %d\n" KNRM, pokemon->stats[4]);
+    printf("\t\t" KMAG "Speed: %d\n" KNRM, pokemon->stats[5]);
 
     printf("\n");
 
 	if(pokemon->eggGroups[0] != NULL)
-        printf("\t\t%s\n", pokemon->eggGroups[0]);
+        printf("\t\t%s\t\t(" KRED "%.1f%%" KNRM ", " KCYN "%.1f%%" KNRM ")\n", pokemon->eggGroups[0], pokemon->genderRates[0], pokemon->genderRates[1]);
 
     if(pokemon->eggGroups[1] != NULL)
         printf("\t\t%s\n", pokemon->eggGroups[1]);

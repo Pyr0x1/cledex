@@ -11,6 +11,7 @@ typedef struct pokemon{
 	char* abilities[3];
 	char* eggGroups[2];
 	int stats[6];
+	float genderRates[2]; // 0 female, 1 male, ladies first :)
 
 }POKEMON;
 

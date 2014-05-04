@@ -51,7 +51,7 @@ finds Charmander and Charmeleon
 ```bash
 cledex *eon
 ```
-finds Charmeleon, Vaporeon, Jolteon, Flareon, ..
+finds Charmeleon, Vaporeon, Jolteon, Flareon, ...
 
 Output
 ======

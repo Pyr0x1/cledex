@@ -69,6 +69,11 @@ int main(int argc, char* argv[]) {
 
     g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
 
+    ldb.queryFunc = QPokeGenderRatesFromId;
+    ldb.callbackFunc = callbackGenderRatesFromId;
+
+    g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
+
 	sqlite3_close(db);
 
     g_slist_foreach(pokeList, (GFunc) convertAllStrings, NULL);

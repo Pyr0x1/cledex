@@ -81,6 +81,20 @@ char* QPokeEggsFromId (unsigned int id, int lang){
     return query;
 }
 
+char* QPokeGenderRatesFromId (unsigned int id, int lang){
+
+    char buf[QBUF], *query = NULL;
+
+	sprintf(buf, "%s%d%s", "SELECT female_rate, male_rate "
+                           "FROM gender_rates G, pokemon_gender_rates PG "
+                           "WHERE G.gender_rate_id = PG.gender_rate_id "
+                           "AND PG.species_id = ", id, ";");
+
+	query = strdup(buf);
+
+    return query;
+}
+
 char* QPokeLangIdFromName (char name[]){
 
 	char buf[QBUF], *query = NULL;
