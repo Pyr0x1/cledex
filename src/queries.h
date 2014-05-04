@@ -2,13 +2,9 @@
 
 #define QBUF 1024
 
-char* QPokeNameFromId (unsigned int id);
 char* QPokeIdFromName (char name[], int lang);
 char* QPokeAbilitiesFromId (unsigned int id, int lang);
 char* QPokeTypesFromId (unsigned int id, int lang);
-char* QPokeStatsFromId (unsigned int id);
+char* QPokeStatsFromId (unsigned int id, int lang); // lang isn't needed, but prototype must be equal to other ones
 char* QPokeEggsFromId (unsigned int id, int lang);
-char* QPokeAbilitiesFromName (char name[]);
-char* QPokeTypesFromName (char name[], int lang);
-char* QPokeStatsFromName (char name[]);
 char* QPokeLangIdFromName (char name[]);

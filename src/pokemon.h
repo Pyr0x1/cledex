@@ -22,9 +22,6 @@ void convertSpaceToLine(char* str);
 void convertStarToPerc(char* str);
 void convertAllStrings(POKEMON* pokemon);
 void fixMegaName(POKEMON* pokemon);
-int getPokeTypes(POKEMON* pokemon, gpointer sqldb); // these functions return int, but the value is really never used since it is called in a foreach (anyway if the list is initialized they shouldn't fail)
-int getPokeAbilities(POKEMON* pokemon, gpointer sqldb);
-int getPokeStats(POKEMON* pokemon, gpointer sqldb);
-int getPokeEggs(POKEMON* pokemon, gpointer sqldb);
+int getPokeValues(POKEMON* pokemon, gpointer sqldb); // thise function returns int, but the value is really never used since it is called in a foreach (anyway if the list is initialized it shouldn't fail)
 void freeInnerPoke(POKEMON* pokemon);
 void freePoke(POKEMON* pokemon);

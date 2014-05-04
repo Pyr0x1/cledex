@@ -206,7 +206,7 @@ void fixMegaName(POKEMON* pokemon){
     return ;
 }
 
-int getPokeTypes(POKEMON* pokemon, gpointer sqldb){
+int getPokeValues(POKEMON* pokemon, gpointer sqldb){
 
     LOCALDB* ldb = (LOCALDB*) sqldb;
     sqlite3* db = ldb->db;
@@ -215,9 +215,9 @@ int getPokeTypes(POKEMON* pokemon, gpointer sqldb){
     int retCode;
     int lang = ldb->lang;
 
-    query = QPokeTypesFromId(pokemon->id, lang);
+    query = ldb->queryFunc(pokemon->id, lang);
 
-    retCode = sqlite3_exec(db, query, callbackTypesFromId, pokemon, &zErrMsg);
+    retCode = sqlite3_exec(db, query, ldb->callbackFunc, pokemon, &zErrMsg);
     free(query);
 	if(retCode != SQLITE_OK){
 		fprintf(stderr, "SQL error: %s\n", zErrMsg);
@@ -226,70 +226,7 @@ int getPokeTypes(POKEMON* pokemon, gpointer sqldb){
 	}
 
     return EXIT_SUCCESS;
-}
 
-int getPokeAbilities(POKEMON* pokemon, gpointer sqldb){
-
-    LOCALDB* ldb = (LOCALDB*) sqldb;
-    sqlite3* db = ldb->db;
-    char* query = NULL;
-    char* zErrMsg = NULL;
-    int retCode;
-    int lang = ldb->lang;
-
-    query = QPokeAbilitiesFromId(pokemon->id, lang);
-
-    retCode = sqlite3_exec(db, query, callbackAbilitiesFromId, pokemon, &zErrMsg);
-    free(query);
-	if(retCode != SQLITE_OK){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-		return EXIT_FAILURE;
-	}
-
-    return EXIT_SUCCESS;
-}
-
-int getPokeStats(POKEMON* pokemon, gpointer sqldb){
-
-    sqlite3* db = (sqlite3*) sqldb;
-    char* query = NULL;
-    char* zErrMsg = NULL;
-    int retCode;
-
-    query = QPokeStatsFromId(pokemon->id);
-
-    retCode = sqlite3_exec(db, query, callbackStatsFromId, pokemon, &zErrMsg);
-    free(query);
-	if(retCode != SQLITE_OK){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-		return EXIT_FAILURE;
-	}
-
-    return EXIT_SUCCESS;
-}
-
-int getPokeEggs(POKEMON* pokemon, gpointer sqldb){
-
-    LOCALDB* ldb = (LOCALDB*) sqldb;
-    sqlite3* db = ldb->db;
-    char* query = NULL;
-    char* zErrMsg = NULL;
-    int retCode;
-    int lang = ldb->lang;
-
-    query = QPokeEggsFromId(pokemon->realId, lang); // realId makes the egg group as undiscovered for megaevos, if you want not to appear at all put id
-
-    retCode = sqlite3_exec(db, query, callbackEggsFromId, pokemon, &zErrMsg);
-    free(query);
-	if(retCode != SQLITE_OK){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-		return EXIT_FAILURE;
-	}
-
-    return EXIT_SUCCESS;
 }
 
 void freeInnerPoke(POKEMON* pokemon){

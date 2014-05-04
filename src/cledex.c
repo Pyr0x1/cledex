@@ -49,11 +49,25 @@ int main(int argc, char* argv[]) {
 
     ldb.db = db; // created to pass more values to g_slist_foreach
     ldb.lang = lang;
+    ldb.queryFunc = QPokeTypesFromId;
+    ldb.callbackFunc = callbackTypesFromId;
 
-    g_slist_foreach(pokeList, (GFunc) getPokeTypes, (gpointer) &ldb);
-    g_slist_foreach(pokeList, (GFunc) getPokeAbilities, (gpointer) &ldb);
-    g_slist_foreach(pokeList, (GFunc) getPokeStats, (gpointer) db);
-    g_slist_foreach(pokeList, (GFunc) getPokeEggs, (gpointer) &ldb);
+    g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
+
+    ldb.queryFunc = QPokeAbilitiesFromId; // every time we need to pass query and callback function
+    ldb.callbackFunc = callbackAbilitiesFromId;
+
+    g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
+
+    ldb.queryFunc = QPokeStatsFromId;
+    ldb.callbackFunc = callbackStatsFromId;
+
+    g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
+
+    ldb.queryFunc = QPokeEggsFromId;
+    ldb.callbackFunc = callbackEggsFromId;
+
+    g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
 
 	sqlite3_close(db);
 
