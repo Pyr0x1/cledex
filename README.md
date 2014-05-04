@@ -3,7 +3,7 @@ cledex
 
 A simple Linux command line pokédex written in C.
 
-<a href="http://it.tinypic.com?ref=15ea684" target="_blank"><img src="http://i60.tinypic.com/15ea684.png" border="0" alt="sample"></a>
+<a href="http://it.tinypic.com?ref=2d0aq0i" target="_blank"><img src="http://i58.tinypic.com/2d0aq0i.png" border="0" alt="sample"></a>
 
 Thanks to Veekun for the great database: https://github.com/veekun/pokedex.
 
