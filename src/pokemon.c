@@ -8,6 +8,7 @@
 #include "queries.h"
 #include "callbacks.h"
 #include "languages.h"
+#include "tparam.h"
 
 POKEMON* pokeCreate(){
 
@@ -207,18 +208,18 @@ void fixMegaName(POKEMON* pokemon){
     return ;
 }
 
-int getPokeValues(POKEMON* pokemon, gpointer sqldb){
+int getPokeValues(POKEMON* pokemon, gpointer param){
 
-    LOCALDB* ldb = (LOCALDB*) sqldb;
-    sqlite3* db = ldb->db;
+    TPARAM* tParam = (TPARAM*) param;
+    sqlite3* db = tParam->db;
     char* query = NULL;
     char* zErrMsg = NULL;
     int retCode;
-    int lang = ldb->lang;
+    int lang = tParam->lang;
 
-    query = ldb->queryFunc(pokemon->id, lang);
+    query = tParam->queryFunc(pokemon->id, lang);
 
-    retCode = sqlite3_exec(db, query, ldb->callbackFunc, pokemon, &zErrMsg);
+    retCode = sqlite3_exec(db, query, tParam->callbackFunc, pokemon, &zErrMsg);
     free(query);
 	if(retCode != SQLITE_OK){
 		fprintf(stderr, "SQL error: %s\n", zErrMsg);

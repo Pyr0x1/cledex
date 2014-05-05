@@ -3,17 +3,29 @@
 #include <string.h>
 #include <sqlite3.h>
 #include <glib.h>
+#include <pthread.h>
 #include "queries.h"
 #include "callbacks.h"
 #include "pokemon.h"
 #include "languages.h"
+#include "tparam.h"
+
+void* threadFunc(void* param){
+
+    TPARAM* tParam = (TPARAM*) param;
+
+    g_slist_foreach(tParam->pokeList, (GFunc) getPokeValues, (gpointer) tParam);
+
+    pthread_exit(NULL);
+}
 
 int main(int argc, char* argv[]) {
 
 	sqlite3* db;
-	int retCode, lang, argIndex = 1;
+	int i, arraySize, retCode, lang, argIndex = 1;
     GSList* pokeList = NULL;
-    LOCALDB ldb;
+    TPARAM* tParam = NULL;
+    pthread_t* threads = NULL;
 
     if(argc < 2){
         fprintf(stderr, "Invalid Argument.\nUsage: cldex [-l language] \"pokemon name\"\n");
@@ -47,32 +59,14 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
-    ldb.db = db; // created to pass more values to g_slist_foreach
-    ldb.lang = lang;
-    ldb.queryFunc = QPokeTypesFromId;
-    ldb.callbackFunc = callbackTypesFromId;
+    tParam = tParamInit(db, lang, pokeList, &arraySize);
+    threads = calloc(arraySize, sizeof(pthread_t));
 
-    g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
+    for(i = 0; i < arraySize; i++)
+        pthread_create(&(threads[i]), NULL, threadFunc, &(tParam[i]));
 
-    ldb.queryFunc = QPokeAbilitiesFromId; // every time we need to pass query and callback function
-    ldb.callbackFunc = callbackAbilitiesFromId;
-
-    g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
-
-    ldb.queryFunc = QPokeStatsFromId;
-    ldb.callbackFunc = callbackStatsFromId;
-
-    g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
-
-    ldb.queryFunc = QPokeEggsFromId;
-    ldb.callbackFunc = callbackEggsFromId;
-
-    g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
-
-    ldb.queryFunc = QPokeGenderRatesFromId;
-    ldb.callbackFunc = callbackGenderRatesFromId;
-
-    g_slist_foreach(pokeList, (GFunc) getPokeValues, (gpointer) &ldb);
+    for(i = 0; i < arraySize; i++)
+        pthread_join(threads[i], NULL);
 
 	sqlite3_close(db);
 
@@ -82,6 +76,8 @@ int main(int argc, char* argv[]) {
     printf("--------------------\n\n");
 
 	g_slist_free_full(pokeList, (GDestroyNotify) freePoke);
+	free(threads);
+	free(tParam);
 
 	return EXIT_SUCCESS;
 }
