@@ -41,7 +41,7 @@ cledex "lucario mega"
 cledex -l de glurak  
 ```
 
-Partial search is supported, so you can use "%" or "*" to find partial matches  
+Partial search is supported, so you can use "%" to find partial matches  
 
 **eg.**  
 ```bash
