@@ -176,29 +176,46 @@ void fixMegaName(POKEMON* pokemon){
     char* token = NULL;
     int isMega = FALSE;
 
-    if(pokemon->id > 10000){ // if this is a megaevo
+    if(pokemon->id > 10000){
 
         identifier = strdup(pokemon->identifier); // since strtok edits original string, we copy first
 
         token = strtok(identifier, "-");
 
-        while(token != NULL) {
+        if(pokemon->id > 10033){ // megaevo
 
-            token[0] = toupper(token[0]); // first char upper case
+            while(token != NULL) {
 
-            if(isMega == TRUE) // until we don't match mega token this won't do anything
-                strcat(buff, token); // adds token to buffer
+                token[0] = toupper(token[0]); // first char upper case
 
-            if(strcmp(token, "Mega") == 0){ // we match mega token, write "Mega Pokemon " in buffer, then the upper condition will hold for the remaining tokens
-                isMega = TRUE;
-                strcat(buff, token);
-                strcat(buff, " ");
-                strcat(buff, pokemon->name);
-                strcat(buff, " ");
-            }
+                if(isMega == TRUE) // until we don't match mega token this won't do anything
+                    strcat(buff, token); // adds token to buffer
+
+                if(strcmp(token, "Mega") == 0){ // we match mega token, write "Mega Pokemon " in buffer, then the upper condition will hold for the remaining tokens
+                    isMega = TRUE;
+                    strcat(buff, token);
+                    strcat(buff, " ");
+                    strcat(buff, pokemon->name);
+                    strcat(buff, " ");
+                }
+
+                token = strtok(NULL, "-");
+           }
+        }
+        else{ // other names such as rotom-wash, castform-sunny, ...
+
+            strcat(buff, pokemon->name);
+            strcat(buff, " ");
 
             token = strtok(NULL, "-");
-       }
+
+            while(token != NULL){
+                token[0] = toupper(token[0]);
+                strcat(buff, token);
+                strcat(buff, " ");
+                token = strtok(NULL, "-");
+            }
+        }
 
         free(identifier); // frees the string we used for strtok since we don't need it anymore
         free(pokemon->name);

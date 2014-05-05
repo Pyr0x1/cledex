@@ -44,14 +44,11 @@ int main(int argc, char* argv[]) {
         lang = 9;
         argIndex = 1; // argvalue containing pokemon name, in this case the second one (no language choice)
     }
-    else if(argc == 4 && ((strcmp(argv[1], "-l") == 0))){
+    else if(argc == 4 && (strcmp(argv[1], "-l")) == 0){
         if((lang = isValidLang(argv[2], db)) == 0) // if language isn't valid set it to default
             lang = 9;
         argIndex = 3;
     }
-
-    //convertSpaceToLine(argv[argIndex]); //not used anymore since now we search by local language name, not by identifier
-    convertStarToPerc(argv[argIndex]);
 
     if((pokeList = pokeListInit(db, lang, argv[argIndex])) == NULL){ // error, free DB and List and exit
         g_slist_free_full(pokeList, (GDestroyNotify) freePoke);

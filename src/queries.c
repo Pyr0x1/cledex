@@ -11,7 +11,8 @@ char* QPokeIdFromName (char name[], int lang){
                                "FROM pokemon P, pokemon_species_names PN "
                                "WHERE P.species_id = PN.pokemon_species_id "
                                "AND PN.name LIKE '", name, "' "
-                               "AND PN.local_language_id = ", lang, ";");
+                               "AND PN.local_language_id = ", lang, " "
+                               "ORDER BY P.species_id, P.id;");
 
 	query = strdup(buf);
 
