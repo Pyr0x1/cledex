@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
         argIndex = 3;
     }
 
-    convertSpaceToLine(argv[argIndex]);
+    //convertSpaceToLine(argv[argIndex]); //not used anymore since now we search by local language name, not by identifier
     convertStarToPerc(argv[argIndex]);
 
     if((pokeList = pokeListInit(db, lang, argv[argIndex])) == NULL){ // error, free DB and List and exit

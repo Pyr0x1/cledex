@@ -10,7 +10,7 @@ char* QPokeIdFromName (char name[], int lang){
 	sprintf(buf, "%s%s%s%d%s", "SELECT id, species_id, name, identifier "
                                "FROM pokemon P, pokemon_species_names PN "
                                "WHERE P.species_id = PN.pokemon_species_id "
-                               "AND P.identifier LIKE '", name, "' "
+                               "AND PN.name LIKE '", name, "' "
                                "AND PN.local_language_id = ", lang, ";");
 
 	query = strdup(buf);
