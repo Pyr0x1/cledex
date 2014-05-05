@@ -38,7 +38,7 @@ cledex alakazam
 cledex "lucario mega"  
 ```
 ```bash
-cledex -l it charizard  
+cledex -l de glurak  
 ```
 
 Partial search is supported, so you can use "%" or "*" to find partial matches  
@@ -73,7 +73,7 @@ A list of pokémon with following format
 			SpDef: value
 			Speed: value
 	
-			Egg Group 1
+			Egg Group 1	(Female % rate, Male % rate)
 			Egg Group 2
 
 --------------------
