@@ -49,7 +49,7 @@ cledex charm%
 ```
 finds Charmander and Charmeleon
 ```bash
-cledex *eon
+cledex %eon
 ```
 finds Charmeleon, Vaporeon, Jolteon, Flareon, ...
 
