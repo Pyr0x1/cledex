@@ -47,7 +47,8 @@ GSList* pokeListInit(sqlite3* db, int lang, char name[]){
 		return NULL;
 	}
 	if(g_slist_length(pokeList) == 0){
-        fprintf(stderr, "Entry not found, make sure the name is correct.\n");
+        fprintf(stderr, "Entry not found, make sure the name is correct or the command is correctly written.\n");
+        fprintf(stderr, "Usage: cldex [-l language] \"pokemon name\"\n");
 
 		return NULL;
 	}

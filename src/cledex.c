@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
 		return(EXIT_FAILURE);
 	}
 
-    if(argc == 2 && argv[1][0] != '-'){
+    if(argc == 2 && (strcmp(argv[1], "-l")) != 0){
         lang = 9;
         argIndex = 1; // argvalue containing pokemon name, in this case the second one (no language choice)
     }
